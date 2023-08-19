@@ -18,45 +18,19 @@ class ImageTrackBase(TrackBase):
         self.start_position = start_position
         self.size = size
         map_path = f"{self.file_directory}/{self.directory_path}/{map_name}"
-        self.game_map: pygame.Surface = pygame.image.load(map_path)
-        self.game_map = pygame.transform.scale(self.game_map, size)
+        game_map: pygame.Surface = pygame.image.load(map_path)
+        game_map = pygame.transform.scale(game_map, size)
+        game_map_array = pygame.surfarray.pixels3d(game_map)
 
-        self.center_line = get_track_center_line(map_path, size=size, choice=0)
-        super().__init__(self.game_map)
-
-
-    def draw(self, screen: pygame.Surface, car_position: tuple[int, int]):
-        # x = screen.get_width() // 2 - car_position[0]
-        # y = screen.get_height() // 2 - car_position[1]
-        screen.fill(THECOLORS["white"])
-        screen.blit(self.game_map, dest=(0, 0))
+        raceline_path = f"{self.file_directory}/optimal_racing_line/{map_name[:-4]}.npy"
+        if os.path.exists(raceline_path) or True:
+            center_line = np.load(raceline_path)
+        else:
+            center_line = get_track_center_line(game_map_array, size=size, choice=0)
+        super().__init__(game_map, center_line)
 
     def get_start_position(self):
         return self.start_position
-
-    def get_center_line_index(self, point: np.ndarray, previous_index: int = None):
-        if previous_index is not None:
-            search_slice = (np.arange(15) - 4 + previous_index) % len(self.center_line)
-            center_line = self.center_line[search_slice]
-            distance = np.linalg.norm(center_line - point, axis=1)
-            return (np.argmin(distance) + search_slice[0]) % len(self.center_line)
-        else:
-            center_line = self.center_line
-            distance = np.linalg.norm(center_line - point, axis=1)
-            return np.argmin(distance)
-
-    def get_center_line_in_front(self, car_position: tuple[int, int] = None, center_line_index: int | np.ndarray[int] = None):
-        # spline = np.interp(self.center_line[:, 0])
-        max_points = 10
-        if center_line_index is None:
-            car_position = np.array(car_position)
-            index = self.get_center_line_index(car_position)
-        else:
-            index = center_line_index
-        index_slice = (np.arange(max_points) + index + 2) % len(self.center_line)
-        ref_line = self.center_line[index_slice]
-        return ref_line
-
 
 
 if __name__ == '__main__':
@@ -70,7 +44,6 @@ if __name__ == '__main__':
     line = track.get_center_line_in_front(car_position=(710, 680))
     for point in line:
         pygame.draw.circle(screen, THECOLORS["red"], point, 1)
-
 
     pygame.display.update()
     pygame.time.wait(5000)
