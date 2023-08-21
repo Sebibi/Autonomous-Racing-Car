@@ -78,7 +78,7 @@ class FormulaStudentv1(gym.Env):
         return np.array(obs)
 
     def reset(self, **kwargs):
-        maps = ["map11.png"]  # ["map.png", "map2.png", "map8.png", "map11.png"]
+        maps = ["map.png"]  # ["map.png", "map2.png", "map8.png", "map11.png"]
         map_name = maps[(self.reset_count // 5) % len(maps)]
         if kwargs.get("track_index"):
             map_name = maps[kwargs["track_index"] % len(maps)]
@@ -156,7 +156,7 @@ class FormulaStudentv1(gym.Env):
         self.track.draw(screen=self.screen, car_position=self.car.model.get_position())
         self.car.draw(self.screen, self.car.model.get_position())
         self.sensor.draw(self.screen)
-        center_line = self.track.get_center_line_in_front(self.car.model.get_position())
+        center_line = self.track.get_center_line_in_front(center_line_index=self.previous_closest_point)
         for point in center_line:
             pygame.draw.circle(self.screen, (0, 255, 0), point, 1)
         pygame.display.update()
