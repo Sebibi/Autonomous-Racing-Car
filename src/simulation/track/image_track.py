@@ -23,7 +23,7 @@ class ImageTrackBase(TrackBase):
         game_map_array = pygame.surfarray.pixels3d(game_map)
 
         raceline_path = f"{self.file_directory}/optimal_racing_line/{map_name[:-4]}.npy"
-        if os.path.exists(raceline_path) or True:
+        if os.path.exists(raceline_path) and False:
             center_line = np.load(raceline_path)
         else:
             center_line = get_track_center_line(game_map_array, size=size, choice=0)

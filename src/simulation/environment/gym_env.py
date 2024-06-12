@@ -78,7 +78,7 @@ class FormulaStudentv1(gym.Env):
         return np.array(obs)
 
     def reset(self, **kwargs):
-        maps = ["map.png"]  # ["map.png", "map2.png", "map8.png", "map11.png"]
+        maps = ["map3.png", "map.png", "map2.png", "map8.png", "map11.png"]
         map_name = maps[(self.reset_count // 5) % len(maps)]
         if kwargs.get("track_index"):
             map_name = maps[kwargs["track_index"] % len(maps)]
@@ -144,7 +144,7 @@ class FormulaStudentv1(gym.Env):
 
         center_line_distance = min(1, center_line_distance)
         delta_heading = min(1, delta_heading)
-        score = 20 * delta_index - 2 * delta_steering ** 2 - 5 * center_line_distance - 5 * delta_heading - 5
+        score = (20 * delta_index - 2 * delta_steering ** 2 - 5 * center_line_distance - 5 * delta_heading - 5)
         done = not in_track
         truncated = self.step_count > 600  # self.previous_closest_point == (self.start_index - 1) % len(self.track.center_line)
         if done:
@@ -195,7 +195,7 @@ if __name__ == '__main__':
     gamma = 0.99
     # test_env()
 
-    file_name = "formula_student_ppo_99_race_line_cost"
+    file_name = "formula_student_ppo_99_center_line_cost2"
 
     retest = True
     if os.path.exists(f"{file_name}.zip"):
@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
     train = input("Train? (y/n)") == "y"
     if train:
-        env = FormulaStudentv1(render_mode="ai", clock_speed=200)
+        env = FormulaStudentv1(render_mode="ai", clock_speed=250)
         if os.path.exists(f"{file_name}.zip"):
             print("Loading model")
             model = PPO.load(f"{file_name}.zip", env=env, gamma=gamma)
@@ -216,8 +216,8 @@ if __name__ == '__main__':
             print("Creating model")
             model = PPO("MlpPolicy", env, verbose=1, gamma=gamma)
         print(model.observation_space, model.action_space)
-        model.learn(total_timesteps=200_000, progress_bar=False)
-        model.save(file_name)
+        model.learn(total_timesteps=3_000_000, progress_bar=False)
+        model.save(file_name + "2")
         env.close()
 
     print("Testing model")
