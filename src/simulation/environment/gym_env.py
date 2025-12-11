@@ -78,8 +78,9 @@ class FormulaStudentv1(gym.Env):
         return np.array(obs)
 
     def reset(self, **kwargs):
-        maps = ["map11.png"] # ["map3.png", "map.png", "map2.png", "map8.png", "map11.png"]
+        maps = ["map7.png"]
         map_name = maps[(self.reset_count // 5) % len(maps)]
+        map_name = maps[random.randint(0, len(maps) - 1)]
         if kwargs.get("track_index"):
             map_name = maps[kwargs["track_index"] % len(maps)]
         self.reset_count += 1
@@ -195,7 +196,7 @@ if __name__ == '__main__':
     gamma = 0.99
     # test_env()
 
-    file_name = "formula_student_ppo_99_center_line_cost_2"
+    file_name = "formula_student_ppo_99_center_line_cost222"
 
     retest = True
     if os.path.exists(f"{file_name}.zip"):

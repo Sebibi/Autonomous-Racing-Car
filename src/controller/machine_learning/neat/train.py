@@ -16,7 +16,7 @@ def eval_genomes(genomes, config):
     window_size = (1600, 800)
     os.environ["SDL_VIDEODRIVER"] = "dummy"
     screen = pygame.display.set_mode(window_size)
-    track = ImageTrackBase(map_name="map8.png", start_position=(710, 680, 180), size=window_size)
+    track = ImageTrackBase(map_name="map11.png", start_position=(710, 680, 180), size=window_size)
     # track = RectangleTrack(1000, 700, 100, center)
     cars = [PygameCar.get_normal_car(track) for _ in genomes]
 
@@ -40,7 +40,7 @@ def eval_genomes(genomes, config):
 
 
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-34')
+    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-76')
     # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
