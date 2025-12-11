@@ -38,7 +38,7 @@ class CarModel:
         self.y += -self.v * math.sin(np.radians(self.angle))
 
     def grip_coefficient(self, velocity, steering_angle):
-        # Define the grip coefficient as a function of velocity and steering angle
+        # Define the grip coefficient as a function of velocity
         max_grip = 1.0  # Maximum grip coefficient
         min_grip = 0.2  # Minimum grip coefficient
         grip = max_grip - 0.8 * (velocity / self.v_max)  # Grip decreases with velocity
